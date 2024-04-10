@@ -11,4 +11,19 @@
         <maven.compiler.target>17</maven.compiler.target>
         <exec.mainClass>org.calculadora.datospersonastas.DatosPersonasTAS</exec.mainClass>
     </properties>
+     <dependencies>
+        <dependency>
+            <groupId>org.firebirdsql.jdbc</groupId>
+            <artifactId>jaybird</artifactId>
+            <version>4.0.9.java8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.4.1</version>
+            <type>jar</type>
+        </dependency>
+        
+
+    </dependencies>
 </project>

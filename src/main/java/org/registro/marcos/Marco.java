@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +24,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 import org.registro.entidad.Personas;
+import org.registro.factory.Factoria;
+import org.registro.interfaces.iRegistro;
+import static org.registro.marcos.PanelTablas.modeloTabla;
 import static org.registro.marcos.PanelTablas.tabla;
 
 /**
@@ -29,79 +35,75 @@ import static org.registro.marcos.PanelTablas.tabla;
  */
 public class Marco extends JFrame {
 
-    private PanelPrincipal panelPrincipal = new PanelPrincipal();
     private PanelDatos panelDatos = new PanelDatos();
     private PanelTablas panelTablas = new PanelTablas();
-    private PanelBotones panelBotones = new PanelBotones();
+
 
     public Marco() {
         this.setTitle("Registro");
         this.setSize(700, 500);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(this);
-        this.add(panelPrincipal);
-        this.add(panelDatos);
-        this.add(panelTablas);
-        this.add(panelBotones);
-        setLayout(new BorderLayout()); // Agregado para establecer el layout del JFrame
-        this.add(panelDatos, BorderLayout.NORTH);
-        this.add(panelTablas, BorderLayout.SOUTH);
-        this.add(panelBotones, BorderLayout.CENTER);
+        this.setLocationRelativeTo(null); 
 
-    }
+        setLayout(new GridLayout(1, 2));
 
-}
+        JPanel panelIzquierdo = new JPanel(new BorderLayout());
+        panelIzquierdo.add(panelDatos, BorderLayout.CENTER);
 
-class PanelPrincipal extends JPanel {
+        add(panelIzquierdo);
 
-    private Border borde = new LineBorder(Color.BLUE, 2);
-
-    public PanelPrincipal() {
-        setBorder(borde);
-
+        add(panelTablas);
     }
 
 }
 
 class PanelDatos extends JPanel {
 
-
-    private JLabel labelid = new JLabel("ID: ");
-    private JLabel labelnombre = new JLabel("NOMBRES:");
-    private JLabel labelapellido = new JLabel("APELLIDOS: ");
-    private JLabel labeltelefono = new JLabel("TELEFONO: ");
-    static JTextField textid = new JTextField(30);
-    static JTextField textnombre = new JTextField(30);
-    static JTextField textapellido = new JTextField(30);
-    static JTextField texttelefono = new JTextField(30);
+    private JLabel labelnombre = new JLabel("Nombres:");
+    private JLabel labelapellido = new JLabel("Apellidos:");
+    private JLabel labeltelefono = new JLabel("Telefono:");
+    static JTextField textid = new JTextField(20);
+    static JTextField textnombre = new JTextField(20);
+    static JTextField textapellido = new JTextField(20);
+    static JTextField texttelefono = new JTextField(20);
 
     public PanelDatos() {
-
-        setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(400, 150));
-
-        JPanel panelDerecha = new JPanel();
-        panelDerecha.setLayout(new GridLayout(4, 1));
-        panelDerecha.add(textid);
-        panelDerecha.add(textnombre);
-        panelDerecha.add(textapellido);
-        panelDerecha.add(texttelefono);
+        setLayout(new FlowLayout(FlowLayout.CENTER)); 
 
         JPanel panelIzquierda = new JPanel();
-        panelIzquierda.setLayout(new GridLayout(4, 1));
-        panelIzquierda.add(labelid);
+        panelIzquierda.setLayout(new BoxLayout(panelIzquierda, BoxLayout.Y_AXIS)); 
+
+        labelnombre.setFont(new Font("Comic Sans Ms", Font.BOLD, 15));
+        labelapellido.setFont(new Font("Comic Sans Ms", Font.BOLD, 15));
+        labeltelefono.setFont(new Font("Comic Sans Ms", Font.BOLD, 15));
+        panelIzquierda.add(Box.createVerticalStrut(100));
         panelIzquierda.add(labelnombre);
+        panelIzquierda.add(Box.createVerticalStrut(5));
         panelIzquierda.add(labelapellido);
+        panelIzquierda.add(Box.createVerticalStrut(5));
         panelIzquierda.add(labeltelefono);
 
-        add(panelIzquierda, BorderLayout.WEST);
-        add(panelDerecha, BorderLayout.EAST);
+        // Panel para los JTextFields
+        JPanel panelDerecha = new JPanel();
+        panelDerecha.setLayout(new BoxLayout(panelDerecha, BoxLayout.Y_AXIS)); 
+        panelDerecha.add(Box.createVerticalStrut(100));
+        panelDerecha.add(textnombre);
+        panelDerecha.add(Box.createVerticalStrut(5)); 
+        panelDerecha.add(textapellido);
+        panelDerecha.add(Box.createVerticalStrut(5)); 
+        panelDerecha.add(texttelefono);
+
+        add(panelIzquierda);
+        add(panelDerecha);
+        PanelBotones panelBotones = new PanelBotones();
+        panelBotones.add(Box.createVerticalStrut(100));
+        add(panelBotones, BorderLayout.SOUTH);
     }
+
 }
 
 class PanelBotones extends JPanel {
-
 
     private JButton jbNuevo = new JButton("Limpiar");
     private JButton jbGuardar = new JButton("Guardar");
@@ -111,34 +113,36 @@ class PanelBotones extends JPanel {
 
     public PanelBotones() {
 
-
         setLayout(new FlowLayout(FlowLayout.CENTER));
-        setBorder(new EtchedBorder(EtchedBorder.RAISED));
+
         add(jbNuevo);
         add(jbGuardar);
         add(jbModifocar);
         add(jbEliminar);
-        // Declaración de una variable de control
 
         jbModifocar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String textoId = PanelDatos.textid.getText();
-                if (!textoId.isEmpty()) {
-                    int idModificar = Integer.parseInt(textoId);
-                    DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
-                    for (int i = 0; i < modeloTabla.getRowCount(); i++) {
-                        int idTabla = (int) modeloTabla.getValueAt(i, 0); 
+                String idString = JOptionPane.showInputDialog("Ingrese el ID de la persona a modificar:");
+                if (idString != null && !idString.isEmpty()) {
+                    int id = Integer.parseInt(idString);
+                    String nombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre:");
+                    String apellidos = JOptionPane.showInputDialog("Ingrese los nuevos apellidos:");
+                    String telefono = JOptionPane.showInputDialog("Ingrese el nuevo teléfono:");
 
-                        if (idTabla == idModificar) {
-                            modeloTabla.setValueAt(PanelDatos.textnombre.getText(), i, 1);
-                            modeloTabla.setValueAt(PanelDatos.textapellido.getText(), i, 2);
-                            modeloTabla.setValueAt(PanelDatos.texttelefono.getText(), i, 3);
-                            break;
-                        }
-                    }
+                    // Crear un objeto Personas con los nuevos datos
+                    Personas personaModificada = new Personas();
+                    personaModificada.setId(id);
+                    personaModificada.setNombre(nombre);
+                    personaModificada.setApellidos(apellidos);
+                    personaModificada.setTelefono(telefono);
+
+                    iRegistro factory = Factoria.getFactoria();
+                    factory.ModificarPersonas(personaModificada);
+
+                    factory.MostrarPersonas(modeloTabla, tabla);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Ingrese un ID válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Debe ingresar un ID válido.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -146,14 +150,13 @@ class PanelBotones extends JPanel {
         jbEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int filaSeleccionada = tabla.getSelectedRow();
+                String id = JOptionPane.showInputDialog(jbEliminar, "INGRESE EL ID");
 
-                if (filaSeleccionada != -1) {
-                    DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
-                    modeloTabla.removeRow(filaSeleccionada);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Seleccione una fila para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                }
+                int idPersona = Integer.parseInt(id); 
+                iRegistro factory = Factoria.getFactoria();
+                factory.EliminarPersonas(idPersona);
+                factory.MostrarPersonas(modeloTabla, tabla);
+
             }
         });
 
@@ -170,18 +173,20 @@ class PanelBotones extends JPanel {
         jbGuardar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ps.setId(Integer.parseInt(PanelDatos.textid.getText()));
-                ps.setNombre(PanelDatos.textnombre.getText());
-                ps.setApellidos(PanelDatos.textapellido.getText());
-                ps.setTelefono(PanelDatos.texttelefono.getText());
+                Personas persona = new Personas();
+                persona.setNombre(PanelDatos.textnombre.getText());
+                persona.setApellidos(PanelDatos.textapellido.getText());
+                persona.setTelefono(PanelDatos.texttelefono.getText());
 
-                DefaultTableModel modeloTabla = (DefaultTableModel) PanelTablas.tabla.getModel();
-                modeloTabla.addRow(new Object[]{ps.getId(), ps.getNombre(), ps.getApellidos(), ps.getTelefono()});
+                iRegistro factory = Factoria.getFactoria();
+
+                factory.AgregarPersonas(persona);
+
                 PanelDatos.textid.setText("");
                 PanelDatos.textnombre.setText("");
                 PanelDatos.textapellido.setText("");
                 PanelDatos.texttelefono.setText("");
-
+                factory.MostrarPersonas(modeloTabla, tabla);
             }
         });
 
@@ -190,22 +195,19 @@ class PanelBotones extends JPanel {
 
 class PanelTablas extends JPanel {
 
-
     static JTable tabla;
-    private DefaultTableModel modeloTabla;
+    static DefaultTableModel modeloTabla;
 
     public PanelTablas() {
-
-        setPreferredSize(new Dimension(400, 250));
-
-        Object[][] datosTabla = {};
-
+        setLayout(new BorderLayout()); 
+        setPreferredSize(new Dimension(200, 250));
         String[] columnas = {"ID", "Nombres", "Apellidos", "Teléfono"};
-        modeloTabla = new DefaultTableModel(datosTabla, columnas);
-
+        modeloTabla = new DefaultTableModel(columnas, 0); 
         tabla = new JTable(modeloTabla);
-
         JScrollPane scrollPane = new JScrollPane(tabla);
-        add(scrollPane, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER); 
+        iRegistro factory = Factoria.getFactoria();
+        factory.MostrarPersonas(modeloTabla, tabla);
+
     }
 }
